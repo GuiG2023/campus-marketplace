@@ -1,0 +1,134 @@
+/* Register.css
+ * Temporary styles for registration page.
+ * TODO: align with team CSS guidelines - pending Bart's input
+ * Author: Guiran Liu
+ */
+
+
+ .register-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.register-container {
+    max-width: 400px;
+    width: 90%;
+    /* margin: 60px auto; */
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.register-container h2 {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.register-container .terms-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.register-container label:not(.terms-label) {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.register-container input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.register-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.register-container button:hover {
+    background-color: #357abd;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+}
+.required {
+    color: red;
+}
+.login-link {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+}
+
+.required-note {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.terms-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.terms-tooltip {
+    position: relative;
+    color: #4a90d9;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.terms-tooltip .tooltip-content {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    width: 300px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #333;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 100;
+}
+
+.terms-tooltip:hover .tooltip-content {
+    display: block;
+}
+
+.terms-label {
+    display: inline;
+    font-weight: normal;
+    margin-bottom: 0;
+    font-size: 13px;
+}
+
+.register-container .terms-container input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}

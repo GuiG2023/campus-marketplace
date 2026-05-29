@@ -1,0 +1,156 @@
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.app-content {
+  margin-top: 80px;
+}
+
+.search-results-container {
+    padding: 20px;
+}
+
+.results-count {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.results-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.result-card {
+    display: flex;
+    gap: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: white;
+}
+
+.result-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.result-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.result-info h3 {
+    margin: 0 0 10px 0;
+}
+
+.result-info p {
+    margin: 5px 0;
+}
+
+.price {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+
+    width: 100%;
+    background-color: #6b46c1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 14px 32px;
+    box-sizing: border-box;
+}
+
+.navbar-left,
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-left {
+    gap: 20px;
+}
+
+.navbar-right {
+    gap: 14px;
+    margin-left: auto;
+}
+
+.navbar-logo-button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-logo-button:hover {
+    background: transparent;
+}
+
+.navbar-logo {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+}
+
+.navbar-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navbar-select,
+.navbar-input {
+    background-color: #f3f4f6;
+    color: #333;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 14px;
+}
+
+.navbar-input {
+    min-width: 220px;
+}
+
+.navbar-button {
+    background-color: #e5e7eb;
+    color: #333;
+    text-decoration: none;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+}
+
+.navbar-button:hover {
+    background-color: #d1d5db;
+}
+
+.navbar-search-button {
+    padding: 9px 13px;
+}
+
+.navbar-greeting {
+    color: white;
+    font-weight: 500;
+    white-space: nowrap;
+}

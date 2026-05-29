@@ -1,0 +1,14 @@
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+
+# OS
+.DS_Store
+
+node_modules/
+.DS_Store
+
+.env.development
+.env.production

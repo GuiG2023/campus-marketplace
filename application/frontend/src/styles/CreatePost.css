@@ -1,0 +1,291 @@
+/**
+ * CreatePost.css
+ * Styles for create post page.
+ *
+ * Author: Kyler Simmons Ayala
+ */
+
+.create-post-page {
+  min-height: 100vh;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0,0,0,0.6)),
+    url("/Sf.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding-top: 80px;
+}
+
+.create-post-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 30px rgba(0, 0, 0, 1);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.create-post-container h1 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.form-left > div {
+  margin-bottom: 16px;
+}
+
+
+.create-post-container label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.create-post-container input,
+.create-post-container textarea,
+.create-post-container select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.create-post-container textarea {
+  min-height: 100px;
+  resize: none;
+}
+
+.create-post-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4a90d9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.create-post-container button:hover {
+  background-color: #357abd;
+}
+
+.limit-warning {
+  color: #008f34;
+  font-size: 14px;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.limit-message {
+  color: rgb(208, 5, 5);
+  font-size: 14px;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.error {
+  color: rgb(208, 5, 5);
+  font-size: 14px;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.success-message {
+  margin-top: 16px;
+  text-align: center;
+  color: green;
+  font-size: 14px;
+}
+
+.photo-drop-box {
+  width: 100%;
+  height: 430px;
+  overflow: hidden;
+  border: 2px dashed #aaa;
+  border-radius: 4px;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  background-color: #f8f8f8;
+  text-align: center;
+  transition: 0.2s ease;
+}
+
+.photo-drop-box:hover {
+  border-color: #555;
+  background-color: #f0f0f0;
+}
+
+.drop-icon {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.photo-drop-box p {
+  margin: 0;
+  font-weight: 600;
+  color: green;
+}
+
+.photo-drop-box small {
+  color: #666;
+  margin-top: 6px;
+}
+
+.photo-preview-grid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.photo-count-1 {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.photo-count-2,
+.photo-count-3,
+.photo-count-4 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.photo-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.photo-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* X button */
+.remove-photo-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+
+  width: 24px !important;
+  height: 24px !important;
+  padding: 0 !important;
+
+  border: none;
+  border-radius: 50%;
+
+  background-color: rgba(0, 0, 0, 0.55) !important;
+  color: white;
+
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.remove-photo-btn:hover {
+  background-color: rgba(208, 5, 5, 0.85) !important;
+}
+
+.required-star {
+  color: red;
+}
+
+.photo-cell-container {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.photo-cell {
+    width: 120px;
+    height: 140px;
+    border: 1px dashed #999;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.empty-photo-cell {
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+}
+
+.empty-photo-cell p {
+    margin: 5px 0 2px;
+}
+
+.photo-preview-cell {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    text-align: center;
+}
+
+.photo-preview-cell img {
+    width: 100%;
+    height: 95px;
+    object-fit: cover;
+    border-radius: 6px 6px 0 0;
+}
+
+.photo-name {
+    font-size: 11px;
+    padding: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.remove-photo-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.create-post-form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.form-right {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.form-left {
+    width: 100%;
+}

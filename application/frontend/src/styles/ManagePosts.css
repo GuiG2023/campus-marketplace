@@ -1,0 +1,127 @@
+/* ManagePosts.css */
+
+.manage-posts-header h2 {
+  margin: 0 0 16px 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.manage-posts-subnav {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid #ececec;
+  margin-bottom: 24px;
+}
+
+.manage-posts-subnav-btn {
+  background: transparent;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.manage-posts-subnav-btn:hover {
+  color: #1a1a1a;
+}
+
+.manage-posts-subnav-btn.active {
+  color: #4b2e83;
+  border-bottom-color: #4b2e83;
+  font-weight: 600;
+}
+
+.manage-posts-empty {
+  color: #888;
+  font-style: italic;
+  padding: 24px 0;
+}
+
+.manage-posts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.manage-posts-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.manage-posts-item:hover {
+  background: #fafafa;
+}
+
+.manage-posts-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.manage-posts-item-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.manage-posts-item-meta {
+  font-size: 14px;
+  color: #777;
+}
+
+.manage-posts-item-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.manage-posts-btn-secondary,
+.manage-posts-btn-danger {
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.manage-posts-btn-secondary {
+  background: #f4f4f4;
+  color: #333;
+  border-color: #e0e0e0;
+}
+
+.manage-posts-btn-secondary:hover {
+  background: #ebebeb;
+}
+
+.manage-posts-btn-danger {
+  background: transparent;
+  color: #c0392b;
+  border-color: #e8c4be;
+}
+
+.manage-posts-btn-danger:hover {
+  background: #fdf2f0;
+  border-color: #c0392b;
+}
+
+.manage-posts-item-image {
+  width: 140px;
+  height: 140px;
+  max-width: 140px;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: #f0f0f0;
+  display: block;
+}

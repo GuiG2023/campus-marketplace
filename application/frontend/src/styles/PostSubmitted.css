@@ -1,0 +1,62 @@
+/**
+ * PostSubmitted.css
+ * Styles for post submitted page.
+ * 
+ * Author: Kyler Simmons Ayala
+ */
+
+.post-submitted-page {
+    min-height: 100vh;
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.6), rgba(0,0,0,0.6)),
+        url("/Sf.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding-top: 80px;
+}
+
+.button-group {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.confirmation-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 30px rgba(0, 0, 0, 1);
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.confirmation-container h1 {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.confirmation-container p {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.confirmation-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
