@@ -102,28 +102,18 @@ def save_image(file: UploadFile) -> str:
 # =============================================================
 
 @router.post("/")
-def create_post(
+async def create_post(
     item_title: str = Form(...),
     item_description: str = Form(...),
     item_price: float = Form(...),
     category_id: int = Form(...),
     item_condition: str = Form("Good"),
-    #images: List[UploadFile] = File([]),
     image1: Optional[UploadFile] = File(None),
     image2: Optional[UploadFile] = File(None),
     image3: Optional[UploadFile] = File(None),
     image4: Optional[UploadFile] = File(None),
     authorization: str = Header(None)
 ):
-    user = get_current_user(authorization)
-
-    # DEBUG
-    #print(f"DEBUG images received: {images}")
-    #for img in images:
-     #   print(f"DEBUG filename: {img.filename}")
-
-
-    # Verify token and get current user
     user = get_current_user(authorization)
 
     # Handle image upload if provided
@@ -148,9 +138,57 @@ def create_post(
             )
             conn.commit()
             post_id = cursor.lastrowid
-        return {"success": True, "post_id": post_id, "image_url": image_url}
     finally:
         conn.close()
+
+    # Trigger AI Moderation Graph
+    try:
+        from google.adk.apps import App
+        from google.adk.runners import InMemoryRunner
+        from app.agents import moderation_workflow
+        from google.genai import types
+        import json
+
+        app_container = App(name="app", root_agent=moderation_workflow)
+        runner = InMemoryRunner(app=app_container)
+        session = await runner.session_service.create_session(
+            app_name="app", user_id=f"user_{user['user_id']}"
+        )
+
+        post_payload = {
+            "post_id": post_id,
+            "item_title": item_title,
+            "item_description": item_description,
+            "image_url": image_url
+        }
+
+        async for event in runner.run_async(
+            user_id=f"user_{user['user_id']}",
+            session_id=session.id,
+            new_message=types.Content(
+                role="user",
+                parts=[types.Part.from_text(text=json.dumps(post_payload))]
+            )
+        ):
+            pass
+    except Exception as mod_err:
+        # Fallback to active status in case of API or model limits
+        from app.agents.tools import update_post_status
+        update_post_status(post_id, "active")
+
+    # Fetch and return final status
+    final_status = "active"
+    conn = get_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT post_status FROM posts WHERE post_id = %s", (post_id,))
+            res = cursor.fetchone()
+            if res:
+                final_status = res["post_status"]
+    finally:
+        conn.close()
+
+    return {"success": True, "post_id": post_id, "image_url": image_url, "post_status": final_status}
 
 # =============================================================
 # G
