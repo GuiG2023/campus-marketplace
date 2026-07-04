@@ -94,7 +94,7 @@ function CreatePost() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.detail || "Failed to create post");
 
-        navigate("/Post-Submitted");
+        navigate("/Post-Submitted", { state: { status: data.post_status, message: data.message } });
 
     } catch (err) {
         setErrors({ general: err.message });

@@ -6,11 +6,13 @@
  */
 import { useState } from "react";
 import NavBar from "../components/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/PostSubmitted.css";
 
 function PostSubmitted() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { status, message } = location.state || { status: "active", message: "Your post has been submitted successfully!" };
 
     return (
         <div>
@@ -19,11 +21,11 @@ function PostSubmitted() {
             <div className="post-submitted-page">
                 
                 <div className="confirmation-container">
-                    <h1 className="confirmation-title">
-                        Post Submitted Successfully!
+                    <h1 className="confirmation-title" style={{ color: status === "active" ? "#4caf50" : "#f44336" }}>
+                        {status === "active" ? "Post Approved & Published!" : "Post Submission Denied"}
                     </h1>
                     <p className="confirmation-message">
-                        Your post has been submitted and will be available to view after an ADMIN approval.
+                        {message}
                     </p>
 
                     <div className="button-container">

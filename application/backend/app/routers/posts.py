@@ -188,7 +188,18 @@ async def create_post(
     finally:
         conn.close()
 
-    return {"success": True, "post_id": post_id, "image_url": image_url, "post_status": final_status}
+    # Determine user-facing message based on final status
+    message = "Your listing has been successfully posted and is now active on the marketplace!"
+    if final_status == "denied":
+        message = "Your listing was denied as it violates SFSU academic honesty or safety guidelines. If you believe this is an error, please contact the administrator."
+
+    return {
+        "success": True, 
+        "post_id": post_id, 
+        "image_url": image_url, 
+        "post_status": final_status,
+        "message": message
+    }
 
 # =============================================================
 # G
