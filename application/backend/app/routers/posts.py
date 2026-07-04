@@ -172,6 +172,9 @@ async def create_post(
         ):
             pass
     except Exception as mod_err:
+        print(f"\n[AI MODERATION EXCEPTION] Failed to run moderation graph: {str(mod_err)}")
+        import traceback
+        traceback.print_exc()
         # Fallback to active status in case of API or model limits
         from app.agents.tools import update_post_status
         update_post_status(post_id, "active")
