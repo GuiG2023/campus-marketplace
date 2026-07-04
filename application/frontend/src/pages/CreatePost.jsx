@@ -18,6 +18,7 @@ function CreatePost() {
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState({});
     const [photos, setPhotos] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
 
@@ -63,6 +64,7 @@ function CreatePost() {
     }
 
     setErrors({});
+    setIsSubmitting(true);
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -98,6 +100,7 @@ function CreatePost() {
 
     } catch (err) {
         setErrors({ general: err.message });
+        setIsSubmitting(false);
     }
 };
 
@@ -189,7 +192,9 @@ function CreatePost() {
                                 </select>
                             </div>
 
-                            <button type="submit">Create Post</button>
+                             <button type="submit" disabled={isSubmitting}>
+                                 {isSubmitting ? "Analyzing & Posting..." : "Create Post"}
+                             </button>
                         </div>
 
                         <div className="form-right">
