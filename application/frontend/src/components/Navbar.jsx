@@ -59,7 +59,7 @@ const Navbar = () => {
     return (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 1000 }}>
             <div style={{ background: "#1a1a2e", color: "white", textAlign: "center", padding: "6px", fontSize: "12px" }}>
-                SFSU Software Engineering Project CSC 648-848, Spring 2026. For Demonstration Only
+                For Demonstration Only
             </div>
             <nav className="navbar" style={{ position: "relative", zIndex: "auto" }}>
                 <div className="navbar-left">
