@@ -24,4 +24,6 @@ typing_extensions==4.15.0
 uvicorn==0.41.0
 uvloop==0.22.1
 watchfiles==1.1.1
-websockets==16.0
+websockets>=15.0.1,<16.0
+google-adk[gcp]>=2.0.0,<3.0.0
+google-genai>=0.1.0

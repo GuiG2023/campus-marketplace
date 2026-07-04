@@ -92,6 +92,83 @@ def create_meetup_request(req: MeetupRequest, authorization: str = Header(None))
         conn.close()
 
 # =============================================================
+# Request Model for Auto-Scheduling
+# =============================================================
+class AutoScheduleRequest(BaseModel):
+    post_id: int
+    timeframe: str
+
+# =============================================================
+# POST /api/meetup_requests/auto-schedule - Coordinate Meetup with AI
+# Requires authentication (Bearer token)
+# Automatically runs scheduler_agent to matching buyer/seller calendars
+# and books transaction automatically
+# =============================================================
+@router.post("/auto-schedule")
+async def auto_schedule_meetup(req: AutoScheduleRequest, authorization: str = Header(None)):
+    user = get_current_user(authorization)
+    buyer_user_id = user["user_id"]
+
+    conn = get_connection()
+    try:
+        with conn.cursor() as cursor:
+            # Check post exists and get seller ID
+            cursor.execute(
+                "SELECT seller_user_id, post_status FROM posts WHERE post_id = %s",
+                (req.post_id,)
+            )
+            post = cursor.fetchone()
+
+            if not post:
+                raise HTTPException(status_code=404, detail="Post not found")
+            if post["post_status"] != "active":
+                raise HTTPException(status_code=400, detail="Post is not active")
+            if post["seller_user_id"] == buyer_user_id:
+                raise HTTPException(status_code=400, detail="Cannot request meetup on your own post")
+
+            seller_user_id = post["seller_user_id"]
+    finally:
+        conn.close()
+
+    # Trigger Scheduler Agent
+    try:
+        from google.adk.apps import App
+        from google.adk.runners import InMemoryRunner
+        from app.agents import scheduler_agent
+        from google.genai import types
+        
+        app_container = App(name="app", root_agent=scheduler_agent)
+        runner = InMemoryRunner(app=app_container)
+        session = await runner.session_service.create_session(
+            app_name="app", user_id=f"user_{buyer_user_id}"
+        )
+        
+        prompt = (
+            f"Schedule a transaction meetup for post_id={req.post_id}, "
+            f"buyer_user_id={buyer_user_id}, seller_user_id={seller_user_id}. "
+            f"The preferred date is {req.timeframe}. Please fetch both schedules via MCP "
+            f"and coordinate a safe meetup slot."
+        )
+        
+        agent_response = ""
+        async for event in runner.run_async(
+            user_id=f"user_{buyer_user_id}",
+            session_id=session.id,
+            new_message=types.Content(
+                role="user",
+                parts=[types.Part.from_text(text=prompt)]
+            )
+        ):
+            if event.content is not None:
+                for part in event.content.parts:
+                    if part.text:
+                        agent_response += part.text
+                        
+        return {"success": True, "verdict": agent_response.strip()}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Scheduling agent error: {str(e)}")
+
+# =============================================================
 # GET /api/meetup_requests/received - Seller Views Incoming Requests
 # Requires authentication (Bearer token)
 # Returns all meetup requests where current user is the seller
