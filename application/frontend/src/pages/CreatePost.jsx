@@ -71,7 +71,7 @@ function CreatePost() {
     }
 
     try {
-        const BASE_URL = import.meta.env.VITE_API_URL;
+        const BASE_URL = import.meta.env.VITE_API_URL || "";
         const formData = new FormData();
         formData.append("item_title", title);
         formData.append("item_description", description);

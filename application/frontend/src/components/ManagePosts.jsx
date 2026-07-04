@@ -14,7 +14,7 @@ function ManagePosts() {
   const [posts, setPosts] = useState({ active: [], archived: [], sold: [] });
   const [loading, setLoading] = useState(true);
 
-  const BASE_URL = import.meta.env.VITE_API_URL;
+  const BASE_URL = import.meta.env.VITE_API_URL || "";
   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
   const userId = storedUser.user_id;
   const token = localStorage.getItem("token");

@@ -52,8 +52,6 @@ function ViewPostPage() {
     };
 
     useEffect(() => {
-    const BASE_URL = import.meta.env.VITE_API_URL;
-
     const fetchPost = async () => {
         try {
             setLoading(true);
