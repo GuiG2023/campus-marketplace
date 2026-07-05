@@ -8,6 +8,41 @@ import { useEffect, useState, useRef } from "react";
 
 const BASE_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 
+const renderMessageBody = (body) => {
+  if (body && body.startsWith("[Automated System Message]") && body.includes("Location:")) {
+    const locIndex = body.indexOf("Location: ");
+    const timeIndex = body.indexOf(". Time: ");
+    if (locIndex !== -1 && timeIndex !== -1) {
+      const prefix = body.substring(0, locIndex + 10);
+      const locationName = body.substring(locIndex + 10, timeIndex);
+      const suffix = body.substring(timeIndex);
+      
+      const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationName + " SFSU")}`;
+      
+      return (
+        <span>
+          {prefix}
+          <a 
+            href={mapUrl} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={{ 
+              color: "#63b3ed", 
+              textDecoration: "underline", 
+              fontWeight: "600",
+              cursor: "pointer"
+            }}
+          >
+            {locationName}
+          </a>
+          {suffix}
+        </span>
+      );
+    }
+  }
+  return <span>{body}</span>;
+};
+
 function MessageThread({ conversation, onMessageSent }) {
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState("");
@@ -238,7 +273,7 @@ function MessageThread({ conversation, onMessageSent }) {
                 key={m.message_id}
                 className={`thread-message ${isMine ? "mine" : "theirs"}`}
               >
-                <div className="bubble">{m.body}</div>
+                <div className="bubble">{renderMessageBody(m.body)}</div>
               </div>
             );
           })
