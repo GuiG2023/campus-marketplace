@@ -33,20 +33,81 @@ function MeetupRequests({ onPendingCount }) {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleStatusUpdate = async (requestId, newStatus) => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`${BASE_URL}/api/meetup_requests/${requestId}?status=${newStatus}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.detail || "Failed to update meetup status.");
+        return;
+      }
+      
+      // Update local state dynamically
+      setReceived(prev => prev.map(r => r.meetup_request_id === requestId ? { ...r, request_status: newStatus } : r));
+      
+      // Update pending count badge in parent Navbar
+      const newReceived = received.map(r => r.meetup_request_id === requestId ? { ...r, request_status: newStatus } : r);
+      const pendingCount = newReceived.filter(r => r.request_status === "pending").length;
+      onPendingCount?.(pendingCount);
+    } catch {
+      alert("Network error updating status.");
+    }
+  };
+
   const renderRequest = (req) => (
-    <div key={req.meetup_request_id} className="meetup-request-card">
-      <div className="meetup-request-title">{req.item_title}</div>
-      <div className="meetup-request-info">
+    <div key={req.meetup_request_id} className="meetup-request-card" style={{ padding: "12px", borderBottom: "1px solid #eee" }}>
+      <div className="meetup-request-title" style={{ fontWeight: "600", fontSize: "14px" }}>{req.item_title}</div>
+      <div className="meetup-request-info" style={{ color: "#555", fontSize: "12px", margin: "4px 0" }}>
         {activeTab === "received" ? `From: ${req.buyer_name}` : `To: seller`}
       </div>
       {req.location_name && (
-        <div className="meetup-request-info">📍 {req.location_name}</div>
+        <div className="meetup-request-info" style={{ fontSize: "12px", margin: "4px 0" }}>📍 {req.location_name}</div>
       )}
       {req.requested_time && (
-        <div className="meetup-request-info">🕐 {new Date(req.requested_time).toLocaleString()}</div>
+        <div className="meetup-request-info" style={{ fontSize: "12px", margin: "4px 0" }}>🕐 {new Date(req.requested_time).toLocaleString()}</div>
       )}
-      <div className={`meetup-request-status status-${req.request_status}`}>
-        {req.request_status}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px" }}>
+        <span className={`meetup-request-status status-${req.request_status}`} style={{ fontSize: "11px", padding: "2px 6px", borderRadius: "4px" }}>
+          {req.request_status}
+        </span>
+        {activeTab === "received" && req.request_status === "pending" && (
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              onClick={() => handleStatusUpdate(req.meetup_request_id, "accepted")}
+              style={{
+                background: "#4caf50",
+                color: "white",
+                border: "none",
+                padding: "4px 8px",
+                borderRadius: "4px",
+                fontSize: "11px",
+                cursor: "pointer"
+              }}
+            >
+              Accept
+            </button>
+            <button
+              onClick={() => handleStatusUpdate(req.meetup_request_id, "rejected")}
+              style={{
+                background: "#f44336",
+                color: "white",
+                border: "none",
+                padding: "4px 8px",
+                borderRadius: "4px",
+                fontSize: "11px",
+                cursor: "pointer"
+              }}
+            >
+              Decline
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
