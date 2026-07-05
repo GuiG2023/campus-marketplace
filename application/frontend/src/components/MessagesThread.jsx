@@ -17,6 +17,9 @@ function MessageThread({ conversation, onMessageSent }) {
   const [meetupSent, setMeetupSent] = useState(false);
   const [meetupError, setMeetupError] = useState("");
   const [locations, setLocations] = useState([]);
+  const [scheduleMode, setScheduleMode] = useState("manual"); // "manual" or "ai"
+  const [timeframe, setTimeframe] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(true);
   const endRef = useRef(null);
@@ -108,6 +111,37 @@ function MessageThread({ conversation, onMessageSent }) {
     }
   };
 
+  const handleAiSchedule = async (e) => {
+    e.preventDefault();
+    if (!timeframe.trim()) return;
+    setAiLoading(true);
+    setMeetupError("");
+    try {
+      const res = await fetch(`${BASE_URL}/api/meetup_requests/auto-schedule`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          post_id: Number(conversation.post_id),
+          timeframe: timeframe.trim(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setMeetupError(data.detail || "Failed to schedule meetup with AI.");
+        return;
+      }
+      setMeetupSent(true);
+      setMeetupOpen(false);
+    } catch {
+      setMeetupError("Network error — please try again");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const isBuyer = conversation.role === "buyer";
 
   return (
@@ -125,21 +159,67 @@ function MessageThread({ conversation, onMessageSent }) {
       </div>
 
       {meetupOpen && (
-        <form className="meetup-inline-form" onSubmit={sendMeetupRequest}>
-          <label>Proposed Time
-            <input type="datetime-local" value={meetupTime} onChange={e => setMeetupTime(e.target.value)} required />
-          </label>
-          <label>Location
-            <select value={meetupLocationId} onChange={e => setMeetupLocationId(e.target.value)} required>
-              <option value="">Select a location…</option>
-              {locations.map(loc => (
-                <option key={loc.meetup_location_id} value={loc.meetup_location_id}>{loc.location_name}</option>
-              ))}
-            </select>
-          </label>
-          <button type="submit" className="btn-primary">Send Request</button>
-          {meetupError && <div className="meetup-error">{meetupError}</div>}
-        </form>
+        <div className="meetup-inline-container" style={{
+          background: "#f8f9fa",
+          border: "1px solid #dee2e6",
+          borderRadius: "8px",
+          padding: "12px",
+          marginBottom: "12px"
+        }}>
+          <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+            <button
+              type="button"
+              className={`btn-small ${scheduleMode === "manual" ? "btn-primary" : "btn-secondary"}`}
+              onClick={() => setScheduleMode("manual")}
+            >
+              Manual Proposal
+            </button>
+            <button
+              type="button"
+              className={`btn-small ${scheduleMode === "ai" ? "btn-primary" : "btn-secondary"}`}
+              onClick={() => setScheduleMode("ai")}
+              style={{ display: "flex", alignItems: "center", gap: "4px" }}
+            >
+              AI Auto-Scheduler 🤖
+            </button>
+          </div>
+
+          {scheduleMode === "manual" ? (
+            <form className="meetup-inline-form" onSubmit={sendMeetupRequest}>
+              <label>Proposed Time
+                <input type="datetime-local" value={meetupTime} onChange={e => setMeetupTime(e.target.value)} required />
+              </label>
+              <label>Location
+                <select value={meetupLocationId} onChange={e => setMeetupLocationId(e.target.value)} required>
+                  <option value="">Select a location…</option>
+                  {locations.map(loc => (
+                    <option key={loc.meetup_location_id} value={loc.meetup_location_id}>{loc.location_name}</option>
+                  ))}
+                </select>
+              </label>
+              <button type="submit" className="btn-primary">Send Request</button>
+              {meetupError && <div className="meetup-error" style={{ color: "red", marginTop: "5px" }}>{meetupError}</div>}
+            </form>
+          ) : (
+            <form className="meetup-inline-form" onSubmit={handleAiSchedule}>
+              <label>Describe your preferred time (e.g. tomorrow afternoon, July 3 afternoon)
+                <input
+                  type="text"
+                  placeholder="e.g., July 3, 2026 afternoon"
+                  value={timeframe}
+                  onChange={e => setTimeframe(e.target.value)}
+                  required
+                  disabled={aiLoading}
+                  style={{ width: "100%", padding: "6px", margin: "6px 0", borderRadius: "4px", border: "1px solid #ccc" }}
+                />
+              </label>
+              <button type="submit" className="btn-primary" disabled={aiLoading || !timeframe.trim()}>
+                {aiLoading ? "AI Agent Coordinating..." : "Schedule with AI Agent 🤖"}
+              </button>
+              {meetupError && <div className="meetup-error" style={{ color: "red", marginTop: "5px" }}>{meetupError}</div>}
+            </form>
+          )}
+        </div>
       )}
       {meetupSent && !meetupOpen && (
         <div className="meetup-confirmation">Meetup request sent ✓</div>
