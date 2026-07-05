@@ -271,13 +271,17 @@ def update_meetup_status(request_id: int, status: str, authorization: str = Head
     conn = get_connection()
     try:
         with conn.cursor() as cursor:
-            # Verify request exists and current user is the seller
+            # Fetch meetup details and verify seller
             cursor.execute(
-                """SELECT meetup_request_id FROM meetup_requests
-                   WHERE meetup_request_id = %s AND seller_user_id = %s""",
+                """SELECT mr.*, ml.location_name, p.item_title
+                   FROM meetup_requests mr
+                   JOIN posts p ON mr.post_id = p.post_id
+                   LEFT JOIN meetup_locations ml ON mr.meetup_location_id = ml.meetup_location_id
+                   WHERE mr.meetup_request_id = %s AND mr.seller_user_id = %s""",
                 (request_id, seller_user_id)
             )
-            if not cursor.fetchone():
+            meetup = cursor.fetchone()
+            if not meetup:
                 raise HTTPException(status_code=404, detail="Request not found or not authorized")
 
             # Update status
@@ -285,6 +289,39 @@ def update_meetup_status(request_id: int, status: str, authorization: str = Head
                 "UPDATE meetup_requests SET request_status = %s WHERE meetup_request_id = %s",
                 (status, request_id)
             )
+
+            # Insert an automated system message into their chat
+            cursor.execute(
+                """SELECT conversation_id FROM conversations 
+                   WHERE post_id = %s AND buyer_user_id = %s AND seller_user_id = %s""",
+                (meetup["post_id"], meetup["buyer_user_id"], meetup["seller_user_id"])
+            )
+            convo = cursor.fetchone()
+            if convo:
+                time_str = str(meetup["requested_time"])
+                if status == "accepted":
+                    body = (
+                        f"[Automated System Message] I have ACCEPTED your meetup request for '{meetup['item_title']}'. "
+                        f"Location: {meetup['location_name'] or 'TBD'}. "
+                        f"Time: {time_str}."
+                    )
+                elif status == "rejected":
+                    body = f"[Automated System Message] I have DECLINED your meetup request for '{meetup['item_title']}'."
+                elif status == "cancelled":
+                    body = f"[Automated System Message] The meetup request for '{meetup['item_title']}' has been CANCELLED."
+                else: # completed
+                    body = f"[Automated System Message] The transaction for '{meetup['item_title']}' has been completed. Thank you!"
+
+                cursor.execute(
+                    """INSERT INTO messages (conversation_id, sender_user_id, body)
+                       VALUES (%s, %s, %s)""",
+                    (convo["conversation_id"], seller_user_id, body)
+                )
+                cursor.execute(
+                    "UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE conversation_id = %s",
+                    (convo["conversation_id"],)
+                )
+
             conn.commit()
 
         return {"success": True, "status": status}
