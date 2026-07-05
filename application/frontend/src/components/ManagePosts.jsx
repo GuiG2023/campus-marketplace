@@ -128,14 +128,14 @@ function ManagePosts() {
           {posts.active.map(post => renderPostCard(post,
             <>
               <button className="manage-posts-btn-secondary" onClick={() => handleMarkSold(post.post_id)}>Mark Sold</button>
-              <button className="manage-posts-btn-danger" onClick={() => handleArchive(post.post_id)}>Archive</button>
+              <button className="manage-posts-btn-danger" onClick={() => handleArchive(post.post_id)}>Delete</button>
             </>
           ))}
         </ul>
       );
     }
     if (subTab === "archived") {
-      if (!posts.archived.length) return <p className="manage-posts-empty">No archived posts.</p>;
+      if (!posts.archived.length) return <p className="manage-posts-empty">No deleted posts.</p>;
       return (
         <ul className="manage-posts-list">
           {posts.archived.map(post => renderPostCard(post,
@@ -159,7 +159,7 @@ function ManagePosts() {
       <header className="manage-posts-header"><h2>Manage Posts</h2></header>
       <div className="manage-posts-subnav">
         <button className={`manage-posts-subnav-btn ${subTab === "active" ? "active" : ""}`} onClick={() => setSubTab("active")}>Active ({posts.active.length})</button>
-        <button className={`manage-posts-subnav-btn ${subTab === "archived" ? "active" : ""}`} onClick={() => setSubTab("archived")}>Archived ({posts.archived.length})</button>
+        <button className={`manage-posts-subnav-btn ${subTab === "archived" ? "active" : ""}`} onClick={() => setSubTab("archived")}>Deleted ({posts.archived.length})</button>
         <button className={`manage-posts-subnav-btn ${subTab === "sold" ? "active" : ""}`} onClick={() => setSubTab("sold")}>Sold ({posts.sold.length})</button>
       </div>
       <div className="manage-posts-content">{renderContent()}</div>
