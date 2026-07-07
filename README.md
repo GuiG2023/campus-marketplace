@@ -1,8 +1,8 @@
 # GatorMart - SFSU Campus Marketplace (AI Extensions)
 
-GatorMart is a student campus marketplace built for San Francisco State University. This folder houses the backend and frontend components of the application. 
+GatorMart is a student campus marketplace built for San Francisco State University. This folder contains the backend and frontend components of the application. 
 
-As part of our hackathon entry and capstone evolution, we have integrated two state-of-the-art AI agent features using the **Google Agent Development Kit (ADK) 2.0** and the **Model Context Protocol (MCP)**.
+As part of our hackathon submission and capstone evolution, we integrated two state-of-the-art AI agent features using the **Google Agent Development Kit (ADK) 2.0** and the **Model Context Protocol (MCP)**.
 
 ---
 
@@ -11,18 +11,18 @@ As part of our hackathon entry and capstone evolution, we have integrated two st
 ### 1. Parallel Multimodal Content Moderation
 *   **Location**: `application/backend/app/agents/moderation_graph.py`
 *   **Workflow**: When a student posts a listing, it is created with a `pending` status. A parallel graph workflow is triggered:
-    *   **Text Node**: Evaluates the title and description against SFSU academic honesty policies (blocking exam leaks, homework help, illegal items, etc.).
-    *   **Vision Node**: Evaluates the image attachment (if present) for safety and compliance.
-    *   **Join Node & Governor**: Merges the text/vision verdicts. If compliant, updates `post_status` to `active`. If non-compliant, flags it as `denied` and logs the reason.
+    *   **Text Node**: Evaluates the title and description against SFSU academic integrity policies (blocking exam leaks, homework help, illegal items, etc.).
+    *   **Vision Node**: Evaluates the attached image (if present) for safety and compliance.
+    *   **Join Node & Governor**: Merges the text and vision results. If compliant, updates `post_status` to `active`. If non-compliant, flags it as `denied` and logs the reason.
     *   **Resilience**: Gracefully falls back to passing and setting the listing `active` if model quotas are temporarily exhausted, ensuring the marketplace remains online.
 
 ### 2. Calendar-Aware Safe Meetup Scheduler (MCP)
 *   **Location**: `application/backend/app/agents/scheduler_agent.py`
 *   **MCP Server**: `application/backend/app/mcp/server.py`
 *   **Workflow**: Buyer and seller students can coordinate transaction meetups:
-    *   The scheduler agent queries the custom **FastMCP Calendar Server** via stdio to fetch real-time buyer/seller mock busy calendars.
+    *   The scheduler agent queries the custom **FastMCP Calendar Server** via stdio to fetch buyer and seller mock calendar availability.
     *   The agent queries the MySQL database for SFSU campus-designated safe meetup locations (e.g. Cesar Chavez Student Center).
-    *   It identifies overlapping free windows within the buyer's preferred timeframe, suggests a specific time/location, and inserts the booking into the `meetup_requests` table with status `pending`.
+    *   It identifies overlapping available time slots within the buyer's preferred timeframe, suggests a specific time/location, and inserts the booking into the `meetup_requests` table with status `pending`.
 
 ---
 
