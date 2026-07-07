@@ -18,6 +18,7 @@ function CreatePost() {
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState({});
     const [photos, setPhotos] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
 
@@ -63,6 +64,7 @@ function CreatePost() {
     }
 
     setErrors({});
+    setIsSubmitting(true);
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -71,7 +73,7 @@ function CreatePost() {
     }
 
     try {
-        const BASE_URL = import.meta.env.VITE_API_URL;
+        const BASE_URL = import.meta.env.VITE_API_URL || "";
         const formData = new FormData();
         formData.append("item_title", title);
         formData.append("item_description", description);
@@ -94,10 +96,11 @@ function CreatePost() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.detail || "Failed to create post");
 
-        navigate("/Post-Submitted");
+        navigate("/Post-Submitted", { state: { status: data.post_status, message: data.message } });
 
     } catch (err) {
         setErrors({ general: err.message });
+        setIsSubmitting(false);
     }
 };
 
@@ -189,7 +192,9 @@ function CreatePost() {
                                 </select>
                             </div>
 
-                            <button type="submit">Create Post</button>
+                             <button type="submit" disabled={isSubmitting}>
+                                 {isSubmitting ? "Analyzing & Posting..." : "Create Post"}
+                             </button>
                         </div>
 
                         <div className="form-right">
